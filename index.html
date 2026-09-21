@@ -58,7 +58,7 @@ header{height:78px;background:#070b10d9;border-bottom:1px solid #1d2935;box-shad
 nav button{font-size:14px;padding:9px 12px;border-radius:10px;transition:.2s}nav button:hover{background:#162231;color:#fff}
 .hero{min-height:610px;position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 5%,#1b5688 0,#0d1d2d 28%,#070b11 68%)}
 .hero:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,#05070b 100%);pointer-events:none}
-.hero:after{content:"CARFINDER";position:absolute;bottom:-25px;left:50%;transform:translateX(-50%);font-size:clamp(70px,15vw,190px);font-weight:1000;letter-spacing:-8px;color:#fff03;white-space:nowrap;pointer-events:none}
+.hero:after{content:"CARFINDER";position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:clamp(42px,8vw,105px);font-weight:1000;letter-spacing:-5px;color:#ffffff08;white-space:nowrap;pointer-events:none}
 .hero>div{position:relative;z-index:2}.hero h1{font-weight:950;letter-spacing:-3px;text-shadow:0 10px 40px #0008}.hero h1 span{background:linear-gradient(90deg,#56b0ff,#2188ee);-webkit-background-clip:text;background-clip:text;color:transparent}.hero p{max-width:700px;margin:22px auto 30px;line-height:1.6}
 .search{height:64px;box-shadow:0 20px 70px #0008}.search input{background:#0e1721cc;border-color:#425466}.search button{background:linear-gradient(135deg,#49a9ff,#1478dc);box-shadow:0 8px 30px #2997ff44}
 .hero-chips{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:22px}.hero-chip{padding:8px 12px;border:1px solid #34495c;background:#0d1722aa;border-radius:999px;color:#cbd8e4;font-size:12px}
@@ -460,31 +460,6 @@ buildPopular=function(){oldBuildPopular();setTimeout(observeWikiPhotos,20)};
 const oldOpenDetails=openDetails;
 openDetails=function(company,i){oldOpenDetails(company,i);setTimeout(observeWikiPhotos,20)};
 
-async function loadWikiPhoto(img){
- const q=img.dataset.wiki;if(!q)return;
- const key='cf-wiki-'+q.toLowerCase();
- try{
-  const cached=localStorage.getItem(key);
-  if(cached){img.src=cached;return;}
- }catch(e){}
- try{
-  const url='https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch='+encodeURIComponent(q+' car')+'&gsrnamespace=6&gsrlimit=6&prop=imageinfo&iiprop=url&iiurlwidth=1000&format=json&origin=*';
-  const r=await fetch(url); const d=await r.json();
-  const pages=Object.values((d.query&&d.query.pages)||{});
-  const good=pages.find(p=>p.imageinfo&&p.imageinfo[0]&&p.imageinfo[0].thumburl) || pages[0];
-  const src=good&&good.imageinfo&&good.imageinfo[0]&&(good.imageinfo[0].thumburl||good.imageinfo[0].url);
-  if(src){img.src=src;try{localStorage.setItem(key,src)}catch(e){}}
-  else throw new Error('no image');
- }catch(e){img.style.display='none';const n=img.previousElementSibling;if(n){n.innerHTML='Real photo unavailable';n.style.animation='none'}}
-}
-const photoObserver=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){loadWikiPhoto(e.target);photoObserver.unobserve(e.target)}})},{rootMargin:'500px'});
-function observeWikiPhotos(){document.querySelectorAll('img[data-wiki]').forEach(x=>photoObserver.observe(x))}
-const oldRenderModels=renderModels;
-renderModels=function(){oldRenderModels();setTimeout(observeWikiPhotos,20)};
-const oldBuildPopular=buildPopular;
-buildPopular=function(){oldBuildPopular();setTimeout(observeWikiPhotos,20)};
-const oldOpenDetails=openDetails;
-openDetails=function(company,i){oldOpenDetails(company,i);setTimeout(observeWikiPhotos,20)};
 buildCompanies();buildPopular();updateCompareBar();
 buildPopular();observeWikiPhotos();
 </script>
