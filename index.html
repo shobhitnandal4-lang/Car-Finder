@@ -2,770 +2,491 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CarFinder — Find Your Perfect Car</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CarFinder — Discover Cars</title>
+<style>
+:root{--bg:#070b11;--panel:#101923;--panel2:#162330;--line:#293949;--text:#f5f8fc;--muted:#94a3b2;--blue:#2997ff;--blue2:#0e72d2;--green:#35d07f}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--text)}
+button,input,select{font:inherit}
+header{position:sticky;top:0;z-index:100;height:72px;padding:0 5%;display:flex;align-items:center;justify-content:space-between;background:#0b1119e8;backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.logo{font-size:29px;font-weight:900;letter-spacing:-1px}.logo span{color:var(--blue)}
+nav button{background:none;border:0;color:#dce5ee;margin-left:24px;cursor:pointer;font-weight:600}
+.hero{min-height:510px;display:grid;place-items:center;text-align:center;padding:70px 18px;background:radial-gradient(circle at 50% 0,#17436c 0,#0b131d 42%,#070b11 76%)}
+.hero h1{font-size:clamp(44px,7vw,78px);line-height:1.02;max-width:1000px}.hero h1 span{color:var(--blue)}
+.hero p{font-size:20px;color:var(--muted);margin:20px 0 32px}
+.search{width:min(820px,94vw);height:60px;display:flex;margin:auto}
+.search input{flex:1;min-width:0;background:#121c27;color:#fff;border:1px solid #3a4a5a;border-right:0;border-radius:14px 0 0 14px;padding:0 20px;outline:none}
+.search button{width:125px;border:0;border-radius:0 14px 14px 0;background:var(--blue);color:#fff;font-weight:800;cursor:pointer}
+.container{width:min(1280px,90%);margin:auto;padding:64px 0}
+.title{font-size:38px;margin-bottom:7px}.sub{color:var(--muted);margin-bottom:28px}
+.company-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:16px}
+.company{padding:24px 14px;background:linear-gradient(145deg,#172533,#0e151e);border:1px solid var(--line);border-radius:19px;text-align:center;cursor:pointer;transition:.2s}
+.company:hover{transform:translateY(-5px);border-color:var(--blue);box-shadow:0 15px 40px #2997ff22}
+.company-logo{width:64px;height:64px;object-fit:contain;margin:0 auto 12px;display:block}
+.logo-fallback{width:64px;height:64px;margin:auto auto 12px;border-radius:50%;display:grid;place-items:center;background:#23364a;color:#fff;font-size:24px;font-weight:900}
+.company h3{font-size:17px}.company small{color:var(--muted);display:block;margin-top:6px}
+.hidden{display:none!important}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:25px}
+.toolbar input,.toolbar select{background:#121b25;color:#fff;border:1px solid var(--line);padding:12px 14px;border-radius:10px;outline:none}
+.back{color:var(--blue);background:none;border:0;font-weight:800;cursor:pointer;margin-bottom:18px}
+.model-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:22px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:20px;overflow:hidden;transition:.2s}
+.card:hover{transform:translateY(-5px);border-color:#3b8ed8}
+.car-photo{height:205px;background:linear-gradient(145deg,#1c2c3b,#0d151e);overflow:hidden;position:relative}
+.car-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-note{position:absolute;left:10px;bottom:10px;background:#0009;padding:5px 8px;border-radius:7px;font-size:11px;color:#d9e1ea}
+.card-body{padding:20px}.card h3{font-size:23px;margin-bottom:5px}.type{color:var(--blue);font-size:13px;margin-bottom:16px}
+.specs{display:grid;grid-template-columns:1fr 1fr;gap:10px}.spec{background:#0b1118;border:1px solid #1b2936;padding:11px;border-radius:10px}.spec small{display:block;color:#738293;margin-bottom:4px}.spec strong{font-size:13px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px}.primary,.secondary{padding:12px;border-radius:10px;border:0;cursor:pointer;font-weight:800}.primary{background:var(--blue);color:#fff}.secondary{background:#1c2a38;color:#dfe8f1;border:1px solid #304354}
+.compare-bar{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:90;width:min(700px,92%);background:#111d28f5;border:1px solid #3a5369;border-radius:16px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;box-shadow:0 15px 50px #0009}
+.compare-bar span{color:#cbd6e0;font-size:14px}.compare-bar button{border:0;border-radius:9px;padding:10px 14px;background:var(--blue);color:#fff;font-weight:800;cursor:pointer}
+footer{padding:45px 20px;text-align:center;color:#718091;border-top:1px solid var(--line);margin-top:30px}footer b{color:var(--blue)}
+.modal{position:fixed;inset:0;z-index:200;background:#000b;display:grid;place-items:center;padding:20px}
+.modal-box{width:min(1050px,96vw);max-height:92vh;overflow:auto;background:#0f1822;border:1px solid #35495b;border-radius:22px;box-shadow:0 30px 100px #000;position:relative}
+.close{position:absolute;right:15px;top:15px;width:38px;height:38px;border-radius:50%;border:1px solid #415465;background:#172330;color:#fff;font-size:20px;cursor:pointer;z-index:2}
+.detail-top{display:grid;grid-template-columns:1.15fr 1fr;gap:25px;padding:25px}.detail-img{height:330px;border-radius:16px;overflow:hidden;background:#182531}.detail-img img{width:100%;height:100%;object-fit:cover}.detail-info h2{font-size:36px;margin:15px 0 7px}.detail-info .badge{display:inline-block;color:#78baff;background:#122b43;padding:7px 10px;border-radius:20px;font-size:12px}.detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:22px}.detail-item{background:#0a1118;border:1px solid #1e2d3a;border-radius:11px;padding:13px}.detail-item span{display:block;color:#728294;font-size:12px;margin-bottom:5px}.detail-item b{font-size:14px}.compare-wrap{padding:25px}.compare-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.compare-table{width:100%;border-collapse:collapse;overflow:hidden;border-radius:12px}.compare-table th,.compare-table td{padding:14px;border:1px solid #273847;text-align:left}.compare-table th{background:#172533}.compare-table td{background:#0d151e;color:#dce4ec}.notice{color:#7f90a1;font-size:12px;margin-top:18px}
+@media(max-width:700px){header{padding:0 20px}nav{display:none}.container{width:92%}.title{font-size:30px}.detail-top{grid-template-columns:1fr}.detail-img{height:230px}.hero p{font-size:17px}.search button{width:100px}.actions{grid-template-columns:1fr}.compare-bar{align-items:flex-start;flex-direction:column}}
+</style>
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Arial,Helvetica,sans-serif;
-}
-
-body{
-  background:#070b11;
-  color:#fff;
-}
-
-header{
-  height:75px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 6%;
-  background:#0d131c;
-  border-bottom:1px solid #202b38;
-  position:sticky;
-  top:0;
-  z-index:100;
-}
-
-.logo{
-  font-size:28px;
-  font-weight:800;
-}
-
-.logo span{
-  color:#2997ff;
-}
-
-nav a{
-  color:#ddd;
-  text-decoration:none;
-  margin-left:30px;
-  font-size:16px;
-}
-
-.hero{
-  min-height:560px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:60px 20px;
-  background:
-    radial-gradient(circle at 50% 20%,#173c61 0%,#0b121c 45%,#070b11 75%);
-}
-
-.hero h1{
-  font-size:64px;
-  max-width:900px;
-  line-height:1.05;
-  margin-bottom:20px;
-}
-
-.hero h1 span{
-  color:#2997ff;
-}
-
-.hero p{
-  color:#aeb8c4;
-  font-size:20px;
-  margin-bottom:35px;
-}
-
-.search{
-  width:min(750px,95vw);
-  height:62px;
-  display:flex;
-  margin:auto;
-}
-
-.search input{
-  flex:1;
-  border:1px solid #344454;
-  background:#141d27;
-  color:white;
-  padding:0 22px;
-  font-size:17px;
-  border-radius:14px 0 0 14px;
-  outline:none;
-}
-
-.search button{
-  width:130px;
-  border:0;
-  background:#2997ff;
-  color:white;
-  font-size:17px;
-  font-weight:bold;
-  border-radius:0 14px 14px 0;
-  cursor:pointer;
-}
-
-.container{
-  width:88%;
-  max-width:1300px;
-  margin:auto;
-  padding:70px 0;
-}
-
-.title{
-  font-size:38px;
-  margin-bottom:10px;
-}
-
-.subtitle{
-  color:#8995a3;
-  margin-bottom:35px;
-}
-
-/* COMPANY CARDS */
-
-.company-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:18px;
-}
-
-.company{
-  background:linear-gradient(145deg,#172331,#0f161f);
-  border:1px solid #263545;
-  padding:28px 15px;
-  border-radius:18px;
-  text-align:center;
-  cursor:pointer;
-  transition:.25s;
-}
-
-.company:hover{
-  transform:translateY(-6px);
-  border-color:#2997ff;
-  box-shadow:0 10px 35px #2997ff22;
-}
-
-.company .brand{
-  font-size:40px;
-  margin-bottom:12px;
-}
-
-.company h3{
-  font-size:18px;
-}
-
-.company p{
-  color:#788696;
-  margin-top:7px;
-  font-size:13px;
-}
-
-/* MODELS */
-
-#modelsSection{
-  display:none;
-}
-
-.back{
-  display:inline-block;
-  margin-bottom:25px;
-  color:#2997ff;
-  cursor:pointer;
-  font-weight:bold;
-}
-
-.model-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:25px;
-}
-
-.car{
-  background:#111923;
-  border:1px solid #253444;
-  border-radius:20px;
-  overflow:hidden;
-  transition:.25s;
-}
-
-.car:hover{
-  transform:translateY(-7px);
-  border-color:#2997ff;
-  box-shadow:0 15px 40px #0008;
-}
-
-.car-img{
-  height:190px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:80px;
-  background:
-    radial-gradient(circle,#274966,#111923 65%);
-}
-
-.car-content{
-  padding:22px;
-}
-
-.car-content h3{
-  font-size:23px;
-  margin-bottom:7px;
-}
-
-.car-content .type{
-  color:#2997ff;
-  font-size:14px;
-  margin-bottom:18px;
-}
-
-.specs{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-
-.spec{
-  background:#0b1118;
-  padding:12px;
-  border-radius:10px;
-}
-
-.spec small{
-  display:block;
-  color:#718092;
-  margin-bottom:4px;
-}
-
-.spec strong{
-  font-size:14px;
-}
-
-.compare-btn{
-  width:100%;
-  margin-top:18px;
-  padding:13px;
-  border:0;
-  border-radius:10px;
-  background:#2997ff;
-  color:#fff;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-/* POPULAR */
-
-.popular{
-  margin-top:80px;
-}
-
-.popular-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:20px;
-}
-
-.popular-card{
-  padding:25px;
-  border-radius:18px;
-  background:linear-gradient(145deg,#151f2b,#0d141d);
-  border:1px solid #263545;
-}
-
-.popular-card .emoji{
-  font-size:55px;
-  margin-bottom:15px;
-}
-
-.popular-card h3{
-  margin-bottom:8px;
-}
-
-.popular-card p{
-  color:#8995a3;
-}
-
-/* FOOTER */
-
-footer{
-  text-align:center;
-  padding:45px 20px;
-  background:#0b1017;
-  color:#718092;
-  border-top:1px solid #202b38;
-}
-
-footer strong{
-  color:#2997ff;
-}
-
-/* MOBILE */
-
-@media(max-width:700px){
-
-  header{
-    padding:0 20px;
-  }
-
-  nav{
-    display:none;
-  }
-
-  .hero h1{
-    font-size:43px;
-  }
-
-  .hero p{
-    font-size:17px;
-  }
-
-  .search{
-    height:55px;
-  }
-
-  .search button{
-    width:100px;
-  }
-
-  .container{
-    width:92%;
-  }
-
-  .title{
-    font-size:30px;
-  }
-}
+:root{--bg:#05070b;--panel:#0c1118;--panel2:#111923;--line:#202c38;--text:#f8fafc;--muted:#8c9aaa;--blue:#3b9cff;--blue2:#126ed1;--glow:#3b9cff55}
+body{background:radial-gradient(circle at 50% -10%,#12283d 0,#070b11 30%,#05070b 70%);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{height:78px;background:#070b10d9;border-bottom:1px solid #1d2935;box-shadow:0 10px 40px #0005}
+.logo{font-size:31px;letter-spacing:-1.5px}.logo span{color:#43a5ff}
+nav button{font-size:14px;padding:9px 12px;border-radius:10px;transition:.2s}nav button:hover{background:#162231;color:#fff}
+.hero{min-height:610px;position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 5%,#1b5688 0,#0d1d2d 28%,#070b11 68%)}
+.hero:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,#05070b 100%);pointer-events:none}
+.hero:after{content:"CARFINDER";position:absolute;bottom:-25px;left:50%;transform:translateX(-50%);font-size:clamp(70px,15vw,190px);font-weight:1000;letter-spacing:-8px;color:#fff03;white-space:nowrap;pointer-events:none}
+.hero>div{position:relative;z-index:2}.hero h1{font-weight:950;letter-spacing:-3px;text-shadow:0 10px 40px #0008}.hero h1 span{background:linear-gradient(90deg,#56b0ff,#2188ee);-webkit-background-clip:text;background-clip:text;color:transparent}.hero p{max-width:700px;margin:22px auto 30px;line-height:1.6}
+.search{height:64px;box-shadow:0 20px 70px #0008}.search input{background:#0e1721cc;border-color:#425466}.search button{background:linear-gradient(135deg,#49a9ff,#1478dc);box-shadow:0 8px 30px #2997ff44}
+.hero-chips{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:22px}.hero-chip{padding:8px 12px;border:1px solid #34495c;background:#0d1722aa;border-radius:999px;color:#cbd8e4;font-size:12px}
+.container{padding:72px 0}.title{font-size:42px;font-weight:900;letter-spacing:-1.5px}.sub{line-height:1.5}
+.company-grid{grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:18px}.company{min-height:205px;display:flex;flex-direction:column;justify-content:center;padding:22px;background:linear-gradient(145deg,#111d29,#0a1017);box-shadow:inset 0 1px #ffffff08,0 15px 50px #0005}.company-logo,.logo-fallback{width:74px;height:74px}.company-logo{filter:drop-shadow(0 8px 15px #0008)}.company:hover{transform:translateY(-7px) scale(1.01);box-shadow:0 22px 60px #0009,0 0 0 1px #3b9cff44}.company h3{font-size:19px}.company small{font-size:12px}
+#popular{padding-top:15px}.toolbar{padding:12px;background:#0b1118aa;border:1px solid #1d2935;border-radius:15px;position:sticky;top:88px;z-index:10;backdrop-filter:blur(12px)}
+.toolbar input,.toolbar select{background:#101923;border-color:#293847;padding:13px 15px}.model-grid{grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:24px}
+.card{border-radius:22px;background:linear-gradient(160deg,#101923,#090e14);box-shadow:0 14px 50px #0006;overflow:hidden}.card:hover{transform:translateY(-8px);box-shadow:0 25px 70px #000a,0 0 0 1px #3b9cff55}.car-photo{height:220px;background:radial-gradient(circle,#20384d,#0a1017)}.car-photo:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,#0008 100%);pointer-events:none}.car-photo img{transition:transform .5s}.card:hover .car-photo img{transform:scale(1.045)}.photo-note{z-index:2;background:#05070bcc;border:1px solid #ffffff18;backdrop-filter:blur(8px)}
+.card-body{padding:22px}.card h3{font-size:24px;letter-spacing:-.5px}.type{font-size:12px;text-transform:uppercase;letter-spacing:.7px}.spec{background:#0a1017;border-color:#1c2935}.actions{margin-top:18px}.primary{background:linear-gradient(135deg,#43a5ff,#1477dc);box-shadow:0 8px 25px #2997ff22}.secondary{background:#151f2a;border-color:#2a3b4b}.primary:hover,.secondary:hover{filter:brightness(1.1)}
+.compare-bar{bottom:22px;background:#0b131df2;border-color:#38516a;box-shadow:0 20px 70px #000c}.compare-bar button{background:linear-gradient(135deg,#49a9ff,#1478dc)}
+.modal{backdrop-filter:blur(8px)}.modal-box{background:linear-gradient(145deg,#111b26,#080d13);border-color:#33495c}.detail-img{height:390px;background:#0a1118}.detail-info h2{font-size:42px;letter-spacing:-1.5px}.detail-item{background:#0a1017}.compare-table th{background:#172737}.compare-table td{background:#0a1118}
+.section-kicker{display:inline-flex;padding:7px 10px;border-radius:999px;background:#0e2437;color:#73baff;border:1px solid #244b6d;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.photo-loading{display:grid;place-items:center;height:100%;color:#718397;font-size:12px;letter-spacing:.3px}.photo-loading:before{content:"";width:25px;height:25px;border:3px solid #263746;border-top-color:#4aa9ff;border-radius:50%;animation:spin .8s linear infinite;margin-bottom:9px}@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:700px){.hero{min-height:560px}.hero h1{letter-spacing:-2px}.hero:after{font-size:60px;bottom:0}.container{padding:52px 0}.title{font-size:32px}.toolbar{position:static}.detail-img{height:245px}.detail-info h2{font-size:32px}.company{min-height:180px}}
 </style>
 </head>
-
 <body>
 
 <header>
   <div class="logo">Car<span>Finder</span></div>
-
   <nav>
-    <a href="#companies">Companies</a>
-    <a href="#popular">Popular</a>
+    <button onclick="goHome()">Companies</button>
+    <button onclick="document.getElementById('popular').scrollIntoView()">Popular</button>
+    <button onclick="openCompare()">Compare <span id="compareCount"></span></button>
   </nav>
 </header>
 
-
-<section class="hero">
-
+<section class="hero" id="home">
   <div>
-
-    <h1>
-      Find Your <span>Perfect Car</span>
-    </h1>
-
-    <p>
-      Explore cars from the world's biggest automobile companies.
-    </p>
-
+    <h1>Find Your <span>Perfect Car</span></h1>
+    <p>Explore brands, discover models and compare cars side-by-side.</p>
     <div class="search">
-      <input
-        id="searchInput"
-        type="text"
-        placeholder="Search BMW, M4, Toyota, Supra..."
-        onkeyup="searchCars()"
-      >
-
+      <input id="search" placeholder="Search BMW M4, Thar, Nexon, Supra..." onkeydown="if(event.key==='Enter')searchCars()">
       <button onclick="searchCars()">Search</button>
     </div>
-
-  </div>
-
+  </div><div class="hero-chips"><span class="hero-chip">Real car photos</span><span class="hero-chip">100+ models</span><span class="hero-chip">Full specifications</span><span class="hero-chip">Side-by-side compare</span></div>
+</div>
 </section>
-
 
 <section class="container" id="companies">
-
-  <h2 class="title">Choose a Car Company</h2>
-
-  <p class="subtitle">
-    Select a company to explore its cars.
-  </p>
-
+  <span class="section-kicker">Explore the garage</span><h2 class="title">Choose a Car Company</h2>
+  <p class="sub">Indian and international brands — select one to see its models.</p>
   <div class="company-grid" id="companyGrid"></div>
-
 </section>
 
-
-<section class="container" id="modelsSection">
-
-  <div class="back" onclick="showCompanies()">
-    ← Back to Companies
+<section class="container hidden" id="models">
+  <button class="back" onclick="goHome()">← All Companies</button>
+  <h2 class="title" id="modelsTitle"></h2>
+  <p class="sub">Browse models and open a full details page.</p>
+  <div class="toolbar">
+    <input id="modelSearch" placeholder="Search this company's models..." oninput="renderModels()">
+    <select id="sort" onchange="renderModels()">
+      <option value="name">Sort: Name</option>
+      <option value="power">Sort: Power</option>
+      <option value="speed">Sort: Top speed</option>
+    </select>
   </div>
-
-  <h2 class="title" id="companyTitle"></h2>
-
-  <p class="subtitle">
-    Explore models from this company.
-  </p>
-
   <div class="model-grid" id="modelGrid"></div>
-
 </section>
 
-
-<section class="container popular" id="popular">
-
-  <h2 class="title">🔥 Popular Cars</h2>
-
-  <p class="subtitle">
-    Some of the cars people love to explore.
-  </p>
-
-  <div class="popular-grid">
-
-    <div class="popular-card">
-      <div class="emoji">🏎️</div>
-      <h3>BMW M4 Competition</h3>
-      <p>Performance • Coupe • M Power</p>
-    </div>
-
-    <div class="popular-card">
-      <div class="emoji">🚘</div>
-      <h3>Toyota Supra</h3>
-      <p>Sports Car • Turbo • Rear Wheel Drive</p>
-    </div>
-
-    <div class="popular-card">
-      <div class="emoji">🏁</div>
-      <h3>Porsche 911</h3>
-      <p>Sports Car • Performance • Iconic</p>
-    </div>
-
-    <div class="popular-card">
-      <div class="emoji">⚡</div>
-      <h3>Tesla Model S</h3>
-      <p>Electric • Performance • Technology</p>
-    </div>
-
-  </div>
-
+<section class="container" id="popular">
+  <h2 class="title">🔥 Popular on CarFinder</h2>
+  <p class="sub">Quick picks from different categories.</p>
+  <div class="model-grid" id="popularGrid"></div>
 </section>
 
+<div id="compareBar" class="compare-bar hidden">
+  <span id="compareText">0 cars selected</span>
+  <button onclick="openCompare()">Compare now</button>
+</div>
 
-<footer>
+<div id="modal" class="modal hidden" onclick="if(event.target===this)closeModal()"></div>
 
-  <p>
-    © 2026 <strong>CarFinder</strong> — Explore. Compare. Discover.
-  </p>
-
-</footer>
-
+<footer>© 2026 <b>CarFinder</b> — Explore. Compare. Discover.</footer>
 
 <script>
-
-const cars = {
-
-  "BMW":[
-    ["M4 Competition","Coupe","3.0L Twin Turbo","530 hp","250 km/h","3.5 sec"],
-    ["M3 Competition","Sedan","3.0L Twin Turbo","523 hp","250 km/h","3.5 sec"],
-    ["M5","Sedan","4.4L V8 Hybrid","717 hp","305 km/h","3.5 sec"],
-    ["M2","Coupe","3.0L Turbo","473 hp","285 km/h","4.1 sec"],
-    ["7 Series","Luxury Sedan","3.0L Turbo","375 hp","250 km/h","4.9 sec"],
-    ["X5 M","SUV","4.4L V8","617 hp","285 km/h","3.7 sec"],
-    ["X6 M","SUV Coupe","4.4L V8","617 hp","285 km/h","3.8 sec"],
-    ["i7","Electric Sedan","Electric","536 hp","250 km/h","4.5 sec"]
-  ],
-
-  "Mercedes-Benz":[
-    ["C 63 AMG","Sedan","2.0L Turbo Hybrid","671 hp","280 km/h","3.4 sec"],
-    ["E 53 AMG","Sedan","3.0L Turbo Hybrid","577 hp","280 km/h","3.8 sec"],
-    ["S 580","Luxury Sedan","4.0L V8","496 hp","250 km/h","4.4 sec"],
-    ["AMG GT","Sports Car","4.0L V8","577 hp","315 km/h","3.2 sec"],
-    ["G 63 AMG","SUV","4.0L V8","577 hp","240 km/h","4.5 sec"],
-    ["GLS 600","Luxury SUV","4.0L V8","550 hp","250 km/h","4.9 sec"],
-    ["EQS","Electric Sedan","Electric","536 hp","250 km/h","4.3 sec"]
-  ],
-
-  "Audi":[
-    ["RS5","Coupe","2.9L V6 Turbo","444 hp","250 km/h","3.9 sec"],
-    ["RS7","Sportback","4.0L V8","591 hp","305 km/h","3.4 sec"],
-    ["RS6 Avant","Wagon","4.0L V8","621 hp","305 km/h","3.3 sec"],
-    ["R8","Supercar","5.2L V10","602 hp","331 km/h","3.4 sec"],
-    ["Q8","SUV","3.0L Turbo","335 hp","250 km/h","5.6 sec"],
-    ["Q8 RS","Performance SUV","4.0L V8","591 hp","305 km/h","3.8 sec"]
-  ],
-
-  "Porsche":[
-    ["911 Carrera","Sports Car","3.0L Turbo","379 hp","293 km/h","4.0 sec"],
-    ["911 Turbo S","Sports Car","3.7L Twin Turbo","640 hp","330 km/h","2.7 sec"],
-    ["911 GT3","Track Car","4.0L Flat-6","502 hp","318 km/h","3.4 sec"],
-    ["718 Cayman","Sports Car","2.0L Turbo","300 hp","275 km/h","4.9 sec"],
-    ["Panamera Turbo","Luxury Sedan","4.0L V8","620 hp","315 km/h","3.1 sec"],
-    ["Cayenne Turbo GT","SUV","4.0L V8","650 hp","305 km/h","3.3 sec"],
-    ["Taycan Turbo S","Electric","Electric","750 hp","260 km/h","2.8 sec"]
-  ],
-
-  "Toyota":[
-    ["Supra","Sports Car","3.0L Turbo","382 hp","250 km/h","4.1 sec"],
-    ["GR86","Sports Car","2.4L Boxer","228 hp","226 km/h","6.1 sec"],
-    ["GR Corolla","Hatchback","1.6L Turbo","300 hp","230 km/h","5.0 sec"],
-    ["Land Cruiser","SUV","3.5L Twin Turbo","409 hp","210 km/h","6.7 sec"],
-    ["Fortuner","SUV","2.8L Diesel","201 hp","176 km/h","10.9 sec"],
-    ["Camry","Sedan","2.5L Hybrid","225 hp","205 km/h","7.5 sec"]
-  ],
-
-  "Tesla":[
-    ["Model S","Electric Sedan","Dual Motor","670 hp","250 km/h","3.1 sec"],
-    ["Model S Plaid","Electric Sedan","Tri Motor","1020 hp","322 km/h","2.1 sec"],
-    ["Model 3","Electric Sedan","Electric","394 hp","201 km/h","4.4 sec"],
-    ["Model X","Electric SUV","Dual Motor","670 hp","250 km/h","3.8 sec"],
-    ["Model Y","Electric SUV","Electric","455 hp","217 km/h","3.7 sec"],
-    ["Cybertruck","Electric Pickup","Tri Motor","845 hp","209 km/h","2.7 sec"]
-  ],
-
-  "Lamborghini":[
-    ["Revuelto","Supercar","6.5L V12 Hybrid","1001 hp","350 km/h","2.5 sec"],
-    ["Huracan","Supercar","5.2L V10","631 hp","325 km/h","2.9 sec"],
-    ["Urus","Performance SUV","4.0L V8","657 hp","305 km/h","3.5 sec"],
-    ["Temerario","Supercar","4.0L V8 Hybrid","907 hp","343 km/h","2.7 sec"]
-  ],
-
-  "Ferrari":[
-    ["488 GTB","Supercar","3.9L V8 Turbo","661 hp","330 km/h","3.0 sec"],
-    ["F8 Tributo","Supercar","3.9L V8 Turbo","710 hp","340 km/h","2.9 sec"],
-    ["SF90 Stradale","Supercar","4.0L V8 Hybrid","986 hp","340 km/h","2.5 sec"],
-    ["Purosangue","SUV","6.5L V12","715 hp","310 km/h","3.3 sec"],
-    ["296 GTB","Supercar","3.0L V6 Hybrid","819 hp","330 km/h","2.9 sec"]
-  ],
-
-  "Ford":[
-    ["Mustang GT","Sports Car","5.0L V8","480 hp","250 km/h","4.3 sec"],
-    ["Mustang Dark Horse","Sports Car","5.0L V8","500 hp","267 km/h","3.7 sec"],
-    ["Raptor","Pickup","3.5L V6 Turbo","450 hp","180 km/h","5.6 sec"],
-    ["Bronco","SUV","2.7L V6 Turbo","315 hp","180 km/h","6.7 sec"]
-  ],
-
-  "Nissan":[
-    ["GT-R","Sports Car","3.8L V6 Twin Turbo","565 hp","315 km/h","2.9 sec"],
-    ["Z","Sports Car","3.0L Twin Turbo","400 hp","250 km/h","4.5 sec"],
-    ["Patrol","SUV","5.6L V8","400 hp","210 km/h","6.7 sec"]
-  ],
-
-  "McLaren":[
-    ["720S","Supercar","4.0L V8 Turbo","710 hp","341 km/h","2.9 sec"],
-    ["750S","Supercar","4.0L V8 Turbo","740 hp","332 km/h","2.8 sec"],
-    ["Artura","Supercar","3.0L V6 Hybrid","671 hp","330 km/h","3.0 sec"]
-  ],
-
-  "Volkswagen":[
-    ["Golf GTI","Hot Hatch","2.0L Turbo","241 hp","250 km/h","6.2 sec"],
-    ["Golf R","Hot Hatch","2.0L Turbo","315 hp","270 km/h","4.7 sec"],
-    ["Tiguan","SUV","2.0L Turbo","184 hp","200 km/h","7.5 sec"]
-  ],
-
-  "Volvo":[
-    ["XC90","SUV","2.0L Hybrid","455 hp","180 km/h","5.4 sec"],
-    ["XC60","SUV","2.0L Hybrid","455 hp","180 km/h","5.4 sec"],
-    ["S90","Sedan","2.0L Hybrid","455 hp","180 km/h","4.8 sec"]
-  ],
-
-  "Jeep":[
-    ["Wrangler","SUV","3.6L V6","285 hp","180 km/h","7.6 sec"],
-    ["Grand Cherokee","SUV","3.6L V6","293 hp","210 km/h","7.1 sec"],
-    ["Trackhawk","Performance SUV","6.2L V8","707 hp","290 km/h","3.5 sec"]
-  ],
-
-  "Hyundai":[
-    ["Ioniq 5 N","Electric","Electric","641 hp","260 km/h","3.4 sec"],
-    ["Elantra N","Sports Sedan","2.0L Turbo","276 hp","250 km/h","5.3 sec"],
-    ["Tucson","SUV","2.0L","187 hp","193 km/h","9.0 sec"]
-  ]
-
+const IMG={
+ bmwM4:"https://commons.wikimedia.org/wiki/Special:Redirect/file/2024%20BMW%20M4%20%28G82%29%20Competition%20IMG%209370.jpg",
+ supra:"https://commons.wikimedia.org/wiki/Special:Redirect/file/Toyota%20Supra%20A90.jpg",
+ nexon:"https://commons.wikimedia.org/wiki/Special:Redirect/file/Tata%20Nexon%20XM.jpg",
+ thar:"https://commons.wikimedia.org/wiki/Special:Redirect/file/Mahindra%20Thar.jpg",
+ swift:"https://commons.wikimedia.org/wiki/Special:Redirect/file/Swift.jpg",
+ creta:"https://commons.wikimedia.org/wiki/Special:Redirect/file/Hyundai%20Creta%20India.jpg",
+ generic:"https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1000&q=80"
 };
 
-
-const logos = {
-  "BMW":"🔵",
-  "Mercedes-Benz":"⭐",
-  "Audi":"⚪",
-  "Porsche":"🏁",
-  "Toyota":"🚙",
-  "Tesla":"⚡",
-  "Lamborghini":"🐂",
-  "Ferrari":"🐎",
-  "Ford":"🔵",
-  "Nissan":"🔴",
-  "McLaren":"🏎️",
-  "Volkswagen":"⚙️",
-  "Volvo":"🛡️",
-  "Jeep":"🚙",
-  "Hyundai":"🔷"
+const logos={
+ BMW:"https://cdn.simpleicons.org/bmw/ffffff",
+ "Mercedes-Benz":"https://cdn.simpleicons.org/mercedes/ffffff",
+ Audi:"https://cdn.simpleicons.org/audi/ffffff",
+ Porsche:"https://cdn.simpleicons.org/porsche/ffffff",
+ Toyota:"https://cdn.simpleicons.org/toyota/ffffff",
+ Tesla:"https://cdn.simpleicons.org/tesla/ffffff",
+ Ford:"https://cdn.simpleicons.org/ford/ffffff",
+ Nissan:"https://cdn.simpleicons.org/nissan/ffffff",
+ Volkswagen:"https://cdn.simpleicons.org/volkswagen/ffffff",
+ Volvo:"https://cdn.simpleicons.org/volvo/ffffff",
+ Jeep:"https://cdn.simpleicons.org/jeep/ffffff",
+ Hyundai:"https://cdn.simpleicons.org/hyundai/ffffff",
+ Ferrari:"https://cdn.simpleicons.org/ferrari/ffffff",
+ Lamborghini:"https://cdn.simpleicons.org/lamborghini/ffffff",
+ McLaren:"https://cdn.simpleicons.org/mclaren/ffffff",
+ Tata:"https://cdn.simpleicons.org/tata/ffffff",
+ Mahindra:"https://cdn.simpleicons.org/mahindra/ffffff",
+ "Maruti Suzuki":"https://cdn.simpleicons.org/suzuki/ffffff",
+ Kia:"https://cdn.simpleicons.org/kia/ffffff",
+ MG:"https://cdn.simpleicons.org/mg/ffffff",
+ Honda:"https://cdn.simpleicons.org/honda/ffffff",
+ Skoda:"https://cdn.simpleicons.org/skoda/ffffff"
 };
 
+const cars={
+BMW:[
+["M4 Competition","Coupe","3.0L Twin Turbo","523 hp","650 Nm","250 km/h","3.5 sec","Automatic","Petrol",IMG.bmwM4],
+["M3 Competition","Sedan","3.0L Twin Turbo","523 hp","650 Nm","250 km/h","3.5 sec","Automatic","Petrol",IMG.generic],
+["M5","Performance Sedan","4.4L V8 Hybrid","717 hp","1,000 Nm","305 km/h","3.5 sec","Automatic","Hybrid",IMG.generic],
+["M2","Coupe","3.0L Turbo","473 hp","550 Nm","285 km/h","4.1 sec","Manual/Auto","Petrol",IMG.generic],
+["X5 M","Performance SUV","4.4L V8","617 hp","750 Nm","285 km/h","3.7 sec","Automatic","Petrol",IMG.generic],
+["i7","Luxury EV","Dual Electric Motor","536 hp","745 Nm","250 km/h","4.5 sec","Single-speed","Electric",IMG.generic]
+],
+"Mercedes-Benz":[
+["C 63 AMG","Performance Sedan","2.0L Turbo Hybrid","671 hp","1,020 Nm","280 km/h","3.4 sec","Automatic","Hybrid",IMG.generic],
+["E 53 AMG","Performance Sedan","3.0L Turbo Hybrid","577 hp","750 Nm","280 km/h","3.8 sec","Automatic","Hybrid",IMG.generic],
+["S 580","Luxury Sedan","4.0L V8","496 hp","700 Nm","250 km/h","4.4 sec","Automatic","Petrol",IMG.generic],
+["AMG GT","Sports Car","4.0L V8","577 hp","800 Nm","315 km/h","3.2 sec","Automatic","Petrol",IMG.generic],
+["G 63 AMG","Luxury SUV","4.0L V8","577 hp","850 Nm","240 km/h","4.5 sec","Automatic","Petrol",IMG.generic]
+],
+Audi:[
+["RS5","Coupe","2.9L V6 Turbo","444 hp","600 Nm","250 km/h","3.9 sec","Automatic","Petrol",IMG.generic],
+["RS7","Sportback","4.0L V8","591 hp","800 Nm","305 km/h","3.4 sec","Automatic","Petrol",IMG.generic],
+["RS6 Avant","Performance Wagon","4.0L V8","621 hp","850 Nm","305 km/h","3.3 sec","Automatic","Petrol",IMG.generic],
+["R8","Supercar","5.2L V10","602 hp","560 Nm","331 km/h","3.4 sec","Automatic","Petrol",IMG.generic],
+["Q8","Luxury SUV","3.0L Turbo","335 hp","500 Nm","250 km/h","5.6 sec","Automatic","Petrol",IMG.generic]
+],
+Porsche:[
+["911 Carrera","Sports Car","3.0L Turbo","379 hp","450 Nm","293 km/h","4.0 sec","PDK","Petrol",IMG.generic],
+["911 Turbo S","Sports Car","3.7L Twin Turbo","640 hp","800 Nm","330 km/h","2.7 sec","PDK","Petrol",IMG.generic],
+["911 GT3","Track Car","4.0L Flat-6","502 hp","470 Nm","318 km/h","3.4 sec","Manual/PDK","Petrol",IMG.generic],
+["Taycan Turbo S","Electric Sports","Dual Electric Motor","750 hp","1,110 Nm","260 km/h","2.8 sec","Single-speed","Electric",IMG.generic]
+],
+Toyota:[
+["Supra","Sports Car","3.0L Turbo","382 hp","500 Nm","250 km/h","4.1 sec","Manual/Auto","Petrol",IMG.supra],
+["GR86","Sports Car","2.4L Boxer","228 hp","250 Nm","226 km/h","6.1 sec","Manual/Auto","Petrol",IMG.generic],
+["Land Cruiser","SUV","3.5L Twin Turbo","409 hp","650 Nm","210 km/h","6.7 sec","Automatic","Petrol",IMG.generic],
+["Fortuner","SUV","2.8L Diesel","201 hp","500 Nm","176 km/h","10.9 sec","Automatic","Diesel",IMG.generic],
+["Camry","Sedan","2.5L Hybrid","225 hp","221 Nm","205 km/h","7.5 sec","e-CVT","Hybrid",IMG.generic]
+],
+Tesla:[
+["Model S","Electric Sedan","Dual Motor","670 hp","745 Nm","250 km/h","3.1 sec","Single-speed","Electric",IMG.generic],
+["Model S Plaid","Electric Sedan","Tri Motor","1,020 hp","1,420 Nm","322 km/h","2.1 sec","Single-speed","Electric",IMG.generic],
+["Model 3","Electric Sedan","Dual Motor","394 hp","493 Nm","201 km/h","4.4 sec","Single-speed","Electric",IMG.generic],
+["Model X","Electric SUV","Dual Motor","670 hp","755 Nm","250 km/h","3.8 sec","Single-speed","Electric",IMG.generic],
+["Model Y","Electric SUV","Dual Motor","455 hp","493 Nm","217 km/h","3.7 sec","Single-speed","Electric",IMG.generic]
+],
+Ford:[
+["Mustang GT","Sports Coupe","5.0L V8","480 hp","567 Nm","250 km/h","4.3 sec","Manual/Auto","Petrol",IMG.generic],
+["Mustang Dark Horse","Sports Coupe","5.0L V8","500 hp","567 Nm","267 km/h","3.7 sec","Manual/Auto","Petrol",IMG.generic],
+["Raptor","Performance Pickup","3.5L V6 Turbo","450 hp","691 Nm","180 km/h","5.6 sec","Automatic","Petrol",IMG.generic]
+],
+Nissan:[
+["GT-R","Sports Car","3.8L V6 Twin Turbo","565 hp","633 Nm","315 km/h","2.9 sec","Dual-clutch","Petrol",IMG.generic],
+["Z","Sports Car","3.0L Twin Turbo","400 hp","475 Nm","250 km/h","4.5 sec","Manual/Auto","Petrol",IMG.generic],
+["Patrol","SUV","5.6L V8","400 hp","560 Nm","210 km/h","6.7 sec","Automatic","Petrol",IMG.generic]
+],
+"Lamborghini":[
+["Revuelto","Supercar","6.5L V12 Hybrid","1,001 hp","725 Nm","350 km/h","2.5 sec","Dual-clutch","Hybrid",IMG.generic],
+["Huracan","Supercar","5.2L V10","631 hp","600 Nm","325 km/h","2.9 sec","Dual-clutch","Petrol",IMG.generic],
+["Urus","Performance SUV","4.0L V8","657 hp","850 Nm","305 km/h","3.5 sec","Automatic","Petrol",IMG.generic]
+],
+Ferrari:[
+["296 GTB","Supercar","3.0L V6 Hybrid","819 hp","740 Nm","330 km/h","2.9 sec","Dual-clutch","Hybrid",IMG.generic],
+["SF90 Stradale","Supercar","4.0L V8 Hybrid","986 hp","800 Nm","340 km/h","2.5 sec","Dual-clutch","Hybrid",IMG.generic],
+["Purosangue","Performance SUV","6.5L V12","715 hp","716 Nm","310 km/h","3.3 sec","Dual-clutch","Petrol",IMG.generic]
+],
+McLaren:[
+["720S","Supercar","4.0L V8 Twin Turbo","710 hp","770 Nm","341 km/h","2.9 sec","Dual-clutch","Petrol",IMG.generic],
+["750S","Supercar","4.0L V8 Twin Turbo","740 hp","800 Nm","332 km/h","2.8 sec","Dual-clutch","Petrol",IMG.generic],
+["Artura","Hybrid Supercar","3.0L V6 Hybrid","671 hp","720 Nm","330 km/h","3.0 sec","Dual-clutch","Hybrid",IMG.generic]
+],
+Volkswagen:[
+["Golf GTI","Hot Hatch","2.0L Turbo","241 hp","370 Nm","250 km/h","6.2 sec","DSG","Petrol",IMG.generic],
+["Golf R","Hot Hatch","2.0L Turbo","315 hp","420 Nm","270 km/h","4.7 sec","DSG","Petrol",IMG.generic],
+["Tiguan","SUV","2.0L Turbo","184 hp","320 Nm","200 km/h","7.5 sec","Automatic","Petrol",IMG.generic]
+],
+Volvo:[
+["XC90","Luxury SUV","2.0L Hybrid","455 hp","709 Nm","180 km/h","5.4 sec","Automatic","Hybrid",IMG.generic],
+["XC60","SUV","2.0L Hybrid","455 hp","709 Nm","180 km/h","5.4 sec","Automatic","Hybrid",IMG.generic],
+["EX30","Electric SUV","Electric Motor","428 hp","543 Nm","180 km/h","3.6 sec","Single-speed","Electric",IMG.generic]
+],
+Jeep:[
+["Wrangler","Off-road SUV","2.0L Turbo","270 hp","400 Nm","180 km/h","7.0 sec","Automatic","Petrol",IMG.generic],
+["Grand Cherokee","SUV","3.6L V6","293 hp","353 Nm","210 km/h","7.1 sec","Automatic","Petrol",IMG.generic],
+["Trackhawk","Performance SUV","6.2L V8","707 hp","875 Nm","290 km/h","3.5 sec","Automatic","Petrol",IMG.generic]
+],
+Hyundai:[
+["Creta","SUV","1.5L Turbo","158 hp","253 Nm","190 km/h","9.5 sec","DCT","Petrol",IMG.creta],
+["Ioniq 5 N","Electric Performance","Dual Electric Motor","641 hp","740 Nm","260 km/h","3.4 sec","Single-speed","Electric",IMG.generic],
+["Verna","Sedan","1.5L Turbo","158 hp","253 Nm","190 km/h","8.1 sec","DCT","Petrol",IMG.generic],
+["Tucson","SUV","2.0L","156 hp","192 Nm","193 km/h","10.0 sec","Automatic","Petrol",IMG.generic]
+],
+Tata:[
+["Nexon","Compact SUV","1.2L Turbo","118 hp","170 Nm","180 km/h","11.0 sec","Manual/AMT/DCT","Petrol",IMG.nexon],
+["Nexon EV","Electric SUV","Electric Motor","145 hp","215 Nm","150 km/h","8.9 sec","Single-speed","Electric",IMG.nexon],
+["Harrier","SUV","2.0L Diesel","168 hp","350 Nm","195 km/h","11.0 sec","Manual/Automatic","Diesel",IMG.generic],
+["Safari","3-row SUV","2.0L Diesel","168 hp","350 Nm","195 km/h","11.0 sec","Manual/Automatic","Diesel",IMG.generic],
+["Punch","Compact SUV","1.2L","87 hp","115 Nm","140 km/h","14.0 sec","Manual/AMT","Petrol",IMG.generic]
+],
+Mahindra:[
+["Thar","Off-road SUV","2.0L Turbo","150 hp","320 Nm","155 km/h","10.3 sec","Manual/Automatic","Petrol",IMG.thar],
+["Scorpio-N","SUV","2.0L Turbo","200 hp","380 Nm","180 km/h","10.5 sec","Manual/Automatic","Petrol",IMG.generic],
+["XUV700","SUV","2.0L Turbo","197 hp","380 Nm","197 km/h","9.3 sec","Manual/Automatic","Petrol",IMG.generic],
+["XUV 3XO","Compact SUV","1.2L Turbo","109 hp","200 Nm","180 km/h","11.0 sec","Manual/Automatic","Petrol",IMG.generic],
+["Thar ROXX","SUV","2.0L Turbo","175 hp","380 Nm","180 km/h","12.0 sec","Manual/Automatic","Petrol",IMG.thar]
+],
+"Maruti Suzuki":[
+["Swift","Hatchback","1.2L Z-Series","80 hp","112 Nm","165 km/h","12.5 sec","Manual/AMT","Petrol",IMG.swift],
+["Baleno","Hatchback","1.2L","88 hp","113 Nm","180 km/h","12.5 sec","Manual/AMT","Petrol",IMG.generic],
+["Brezza","Compact SUV","1.5L","102 hp","137 Nm","170 km/h","12.0 sec","Manual/Automatic","Petrol",IMG.generic],
+["Grand Vitara","SUV","1.5L Hybrid","101 hp","137 Nm","170 km/h","12.0 sec","Manual/Automatic","Hybrid",IMG.generic],
+["Jimny","Off-road SUV","1.5L","103 hp","134 Nm","160 km/h","12.0 sec","Manual/Automatic","Petrol",IMG.generic]
+],
+Kia:[
+["Seltos","SUV","1.5L Turbo","158 hp","253 Nm","190 km/h","9.5 sec","DCT","Petrol",IMG.generic],
+["Sonet","Compact SUV","1.5L Diesel","114 hp","250 Nm","170 km/h","11.5 sec","Automatic","Diesel",IMG.generic],
+["Carens","MPV","1.5L Turbo","158 hp","253 Nm","190 km/h","10.0 sec","DCT","Petrol",IMG.generic]
+],
+Honda:[
+["City","Sedan","1.5L i-VTEC","119 hp","145 Nm","180 km/h","10.5 sec","CVT","Petrol",IMG.generic],
+["Elevate","SUV","1.5L i-VTEC","119 hp","145 Nm","160 km/h","11.0 sec","CVT","Petrol",IMG.generic],
+["Civic Type R","Performance Hatch","2.0L Turbo","315 hp","420 Nm","275 km/h","5.4 sec","Manual","Petrol",IMG.generic]
+],
+Skoda:[
+["Slavia","Sedan","1.5L Turbo","148 hp","250 Nm","205 km/h","8.6 sec","DSG","Petrol",IMG.generic],
+["Kushaq","SUV","1.5L Turbo","148 hp","250 Nm","195 km/h","9.1 sec","DSG","Petrol",IMG.generic],
+["Kodiaq","SUV","2.0L Turbo","187 hp","320 Nm","210 km/h","7.8 sec","DSG","Petrol",IMG.generic]
+],
+MG:[
+["Hector","SUV","1.5L Turbo","141 hp","250 Nm","195 km/h","10.0 sec","CVT","Petrol",IMG.generic],
+["ZS EV","Electric SUV","Electric Motor","174 hp","280 Nm","175 km/h","8.5 sec","Single-speed","Electric",IMG.generic],
+["Gloster","SUV","2.0L Diesel","215 hp","478 Nm","180 km/h","11.0 sec","Automatic","Diesel",IMG.generic]
+]
+};
 
-const companyGrid =
-document.getElementById("companyGrid");
+let currentCompany=null;
+let compare=[];
+let currentModels=[];
 
-
-Object.keys(cars).forEach(company => {
-
-  const div=document.createElement("div");
-
-  div.className="company";
-
-  div.innerHTML=`
-    <div class="brand">${logos[company]}</div>
-    <h3>${company}</h3>
-    <p>${cars[company].length} models</p>
-  `;
-
-  div.onclick=()=>{
-    showModels(company);
-  };
-
-  companyGrid.appendChild(div);
-
-});
-
-
-function showModels(company){
-
-  document.getElementById("companies").style.display="none";
-
-  document.getElementById("popular").style.display="none";
-
-  document.getElementById("modelsSection").style.display="block";
-
-  document.getElementById("companyTitle").innerHTML =
-    logos[company]+" "+company;
-
-  const grid=document.getElementById("modelGrid");
-
-  grid.innerHTML="";
-
-  cars[company].forEach(car=>{
-
-    const card=document.createElement("div");
-
-    card.className="car";
-
-    card.innerHTML=`
-
-      <div class="car-img">
-        🏎️
-      </div>
-
-      <div class="car-content">
-
-        <h3>${car[0]}</h3>
-
-        <div class="type">${car[1]}</div>
-
-        <div class="specs">
-
-          <div class="spec">
-            <small>Engine</small>
-            <strong>${car[2]}</strong>
-          </div>
-
-          <div class="spec">
-            <small>Power</small>
-            <strong>${car[3]}</strong>
-          </div>
-
-          <div class="spec">
-            <small>Top Speed</small>
-            <strong>${car[4]}</strong>
-          </div>
-
-          <div class="spec">
-            <small>0–100 km/h</small>
-            <strong>${car[5]}</strong>
-          </div>
-
-        </div>
-
-        <button
-          class="compare-btn"
-          onclick="compareCar('${company}','${car[0]}')">
-          ⚖️ Compare
-        </button>
-
-      </div>
-    `;
-
-    grid.appendChild(card);
-
-  });
-
-  window.scrollTo({
-    top:document.getElementById("modelsSection").offsetTop-80,
-    behavior:"smooth"
-  });
-
+function logoHTML(company){
+ const src=logos[company];
+ return src?`<img class="company-logo" src="${src}" alt="${company} logo" onerror="this.outerHTML='<div class=&quot;logo-fallback&quot;>${company[0]}</div>'">`:`<div class="logo-fallback">${company[0]}</div>`;
 }
-
-
-function showCompanies(){
-
-  document.getElementById("modelsSection").style.display="none";
-
-  document.getElementById("companies").style.display="block";
-
-  document.getElementById("popular").style.display="block";
-
-  window.scrollTo({
-    top:document.getElementById("companies").offsetTop-80,
-    behavior:"smooth"
-  });
-
+function companyCount(company){return cars[company].length}
+function buildCompanies(){
+ const grid=document.getElementById("companyGrid");
+ grid.innerHTML=Object.keys(cars).map(c=>`<div class="company" onclick="showCompany('${c.replace(/'/g,"\\'")}')">${logoHTML(c)}<h3>${c}</h3><small>${companyCount(c)} models</small></div>`).join("");
 }
-
-
+function cardHTML(company,c,i){
+ const [name,type,engine,power,torque,speed,zero,gear,fuel,img]=c;
+ const id=company+"|"+name;
+ const checked=compare.some(x=>x.id===id);
+ return `<article class="card">
+   <div class="car-photo"><div class="photo-loading">Loading real photo…</div><img data-wiki="${company} ${name}" alt="${name}" style="display:none" onload="this.style.display='block';this.previousElementSibling.style.display='none'" onerror="this.style.display='none';this.previousElementSibling.innerHTML='Photo unavailable';this.previousElementSibling.style.animation='none'"><span class="photo-note">Wikimedia Commons</span></div>
+   <div class="card-body">
+    <h3>${name}</h3><div class="type">${company} • ${type}</div>
+    <div class="specs">
+      <div class="spec"><small>Engine</small><strong>${engine}</strong></div>
+      <div class="spec"><small>Power</small><strong>${power}</strong></div>
+      <div class="spec"><small>Top speed</small><strong>${speed}</strong></div>
+      <div class="spec"><small>0–100 km/h</small><strong>${zero}</strong></div>
+    </div>
+    <div class="actions">
+      <button class="primary" onclick="openDetails('${company.replace(/'/g,"\\'")}',${i})">View details</button>
+      <button class="secondary" onclick="toggleCompare('${company.replace(/'/g,"\\'")}',${i})">${checked?'✓ Added':'⚖ Compare'}</button>
+    </div>
+   </div>
+ </article>`;
+}
+function showCompany(company){
+ currentCompany=company;
+ document.getElementById("companies").classList.add("hidden");
+ document.getElementById("popular").classList.add("hidden");
+ document.getElementById("models").classList.remove("hidden");
+ document.getElementById("modelsTitle").textContent=company+" Cars";
+ document.getElementById("modelSearch").value="";
+ currentModels=cars[company];
+ renderModels();
+ document.getElementById("models").scrollIntoView();
+}
+function renderModels(){
+ if(!currentCompany)return;
+ let arr=cars[currentCompany].map((x,i)=>({x,i}));
+ const q=document.getElementById("modelSearch").value.toLowerCase();
+ arr=arr.filter(o=>o.x[0].toLowerCase().includes(q));
+ const s=document.getElementById("sort").value;
+ if(s==="name")arr.sort((a,b)=>a.x[0].localeCompare(b.x[0]));
+ if(s==="power")arr.sort((a,b)=>parseInt(b.x[3])-parseInt(a.x[3]));
+ if(s==="speed")arr.sort((a,b)=>parseInt(b.x[5])-parseInt(a.x[5]));
+ document.getElementById("modelGrid").innerHTML=arr.map(o=>cardHTML(currentCompany,o.x,o.i)).join("")||"<p>No model found.</p>";
+}
+function goHome(){
+ document.getElementById("models").classList.add("hidden");
+ document.getElementById("popular").classList.remove("hidden");
+ document.getElementById("companies").classList.remove("hidden");
+ document.getElementById("home").scrollIntoView();
+}
+function findCar(company,name){
+ return cars[company].findIndex(x=>x[0]===name);
+}
+function openDetails(company,i){
+ const c=cars[company][i];
+ const [name,type,engine,power,torque,speed,zero,gear,fuel,img]=c;
+ document.getElementById("modal").innerHTML=`<div class="modal-box">
+ <button class="close" onclick="closeModal()">×</button>
+ <div class="detail-top">
+  <div class="detail-img"><div class="photo-loading">Loading real photo…</div><img data-wiki="${company} ${name}" alt="${name}" style="display:none" onload="this.style.display='block';this.previousElementSibling.style.display='none'" onerror="this.style.display='none';this.previousElementSibling.innerHTML='Photo unavailable';this.previousElementSibling.style.animation='none'"></div>
+  <div class="detail-info">
+   <span class="badge">${company}</span>
+   <h2>${name}</h2><p style="color:#91a0af">${type}</p>
+   <div class="detail-grid">
+    ${item("Engine name",engine)}${item("Power",power)}${item("Torque",torque)}${item("Top speed",speed)}
+    ${item("0–100 km/h",zero)}${item("Gearbox",gear)}${item("Fuel / powertrain",fuel)}${item("Model",name)}
+   </div>
+   <button class="primary" style="width:100%;margin-top:18px" onclick="toggleCompare('${company.replace(/'/g,"\\'")}',${i});closeModal()">⚖ Add to comparison</button>
+  </div>
+ </div>
+ <div class="compare-wrap"><p class="notice">Specifications shown are reference data and can vary by model year, market and variant. Photo sources are external reference images.</p></div>
+ </div>`;
+ document.getElementById("modal").classList.remove("hidden");
+}
+function item(a,b){return `<div class="detail-item"><span>${a}</span><b>${b}</b></div>`}
+function closeModal(){document.getElementById("modal").classList.add("hidden")}
+function toggleCompare(company,i){
+ const c=cars[company][i], id=company+"|"+c[0];
+ const pos=compare.findIndex(x=>x.id===id);
+ if(pos>=0)compare.splice(pos,1);
+ else if(compare.length<3)compare.push({id,company,i});
+ else {alert("Compare up to 3 cars at a time.");return}
+ updateCompareBar();
+ if(currentCompany)renderModels();
+}
+function updateCompareBar(){
+ const bar=document.getElementById("compareBar");
+ document.getElementById("compareCount").textContent=compare.length?`(${compare.length})`:"";
+ document.getElementById("compareText").textContent=compare.length+" car"+(compare.length===1?"":"s")+" selected";
+ bar.classList.toggle("hidden",compare.length===0);
+}
+function openCompare(){
+ if(compare.length<2){alert("Select at least 2 cars to compare.");return}
+ const rows=[
+  ["Engine",4,2],["Power",3,3],["Torque",4,4],["Top speed",5,5],["0–100 km/h",6,6],["Gearbox",7,7],["Fuel / powertrain",8,8]
+ ];
+ const cols=compare.map(o=>({o,c:cars[o.company][o.i]}));
+ document.getElementById("modal").innerHTML=`<div class="modal-box"><button class="close" onclick="closeModal()">×</button>
+ <div class="compare-wrap"><div class="compare-head"><div><h2>Compare Cars</h2><p class="sub" style="margin:6px 0 0">Side-by-side specifications</p></div><button class="secondary" onclick="compare=[];updateCompareBar();closeModal()">Clear</button></div>
+ <table class="compare-table"><thead><tr><th>Specification</th>${cols.map(x=>`<th>${x.c[0]}<br><small>${x.o.company}</small></th>`).join("")}</tr></thead>
+ <tbody>${rows.map(r=>`<tr><td>${r[0]}</td>${cols.map(x=>`<td>${x.c[r[1]]}</td>`).join("")}</tr>`).join("")}</tbody></table>
+ <p class="notice">Reference specifications; exact figures depend on model year, trim and market.</p></div></div>`;
+ document.getElementById("modal").classList.remove("hidden");
+}
 function searchCars(){
-
-  const query =
-    document.getElementById("searchInput")
-    .value
-    .toLowerCase()
-    .trim();
-
-  if(!query) return;
-
-  for(const company in cars){
-
-    if(company.toLowerCase().includes(query)){
-
-      showModels(company);
-      return;
-
-    }
-
-    const found =
-      cars[company].some(car =>
-        car[0].toLowerCase().includes(query)
-      );
-
-    if(found){
-
-      showModels(company);
-      return;
-
-    }
-
-  }
-
-  alert("Car or company not found.");
-
+ const q=document.getElementById("search").value.toLowerCase().trim();
+ if(!q){goHome();return}
+ let found=null;
+ for(const company of Object.keys(cars)){
+  const i=cars[company].findIndex(c=>company.toLowerCase().includes(q)||c[0].toLowerCase().includes(q));
+  if(i>=0){found={company,i};break}
+ }
+ if(found){showCompany(found.company);document.getElementById("modelSearch").value=cars[found.company][found.i][0];renderModels()}
+ else alert("Car or company not found.");
+}
+function buildPopular(){
+ const picks=[["BMW",0],["Toyota",0],["Tata",0],["Mahindra",0],["Hyundai",0],["Porsche",1]];
+ document.getElementById("popularGrid").innerHTML=picks.map(([c,i])=>cardHTML(c,cars[c][i],i)).join("");
 }
 
-
-function compareCar(company,car){
-
-  alert(
-    "Compare feature coming next! 🚗\n\n"+
-    company+" "+car+
-    " selected."
-  );
-
+async function loadWikiPhoto(img){
+ const q=img.dataset.wiki;if(!q)return;
+ const key='cf-wiki-'+q.toLowerCase();
+ try{
+  const cached=localStorage.getItem(key);
+  if(cached){img.src=cached;return;}
+ }catch(e){}
+ try{
+  const url='https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch='+encodeURIComponent(q+' car')+'&gsrnamespace=6&gsrlimit=6&prop=imageinfo&iiprop=url&iiurlwidth=1000&format=json&origin=*';
+  const r=await fetch(url); const d=await r.json();
+  const pages=Object.values((d.query&&d.query.pages)||{});
+  const good=pages.find(p=>p.imageinfo&&p.imageinfo[0]&&p.imageinfo[0].thumburl) || pages[0];
+  const src=good&&good.imageinfo&&good.imageinfo[0]&&(good.imageinfo[0].thumburl||good.imageinfo[0].url);
+  if(src){img.src=src;try{localStorage.setItem(key,src)}catch(e){}}
+  else throw new Error('no image');
+ }catch(e){img.style.display='none';const n=img.previousElementSibling;if(n){n.innerHTML='Real photo unavailable';n.style.animation='none'}}
 }
+const photoObserver=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){loadWikiPhoto(e.target);photoObserver.unobserve(e.target)}})},{rootMargin:'500px'});
+function observeWikiPhotos(){document.querySelectorAll('img[data-wiki]').forEach(x=>photoObserver.observe(x))}
+const oldRenderModels=renderModels;
+renderModels=function(){oldRenderModels();setTimeout(observeWikiPhotos,20)};
+const oldBuildPopular=buildPopular;
+buildPopular=function(){oldBuildPopular();setTimeout(observeWikiPhotos,20)};
+const oldOpenDetails=openDetails;
+openDetails=function(company,i){oldOpenDetails(company,i);setTimeout(observeWikiPhotos,20)};
 
+async function loadWikiPhoto(img){
+ const q=img.dataset.wiki;if(!q)return;
+ const key='cf-wiki-'+q.toLowerCase();
+ try{
+  const cached=localStorage.getItem(key);
+  if(cached){img.src=cached;return;}
+ }catch(e){}
+ try{
+  const url='https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch='+encodeURIComponent(q+' car')+'&gsrnamespace=6&gsrlimit=6&prop=imageinfo&iiprop=url&iiurlwidth=1000&format=json&origin=*';
+  const r=await fetch(url); const d=await r.json();
+  const pages=Object.values((d.query&&d.query.pages)||{});
+  const good=pages.find(p=>p.imageinfo&&p.imageinfo[0]&&p.imageinfo[0].thumburl) || pages[0];
+  const src=good&&good.imageinfo&&good.imageinfo[0]&&(good.imageinfo[0].thumburl||good.imageinfo[0].url);
+  if(src){img.src=src;try{localStorage.setItem(key,src)}catch(e){}}
+  else throw new Error('no image');
+ }catch(e){img.style.display='none';const n=img.previousElementSibling;if(n){n.innerHTML='Real photo unavailable';n.style.animation='none'}}
+}
+const photoObserver=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){loadWikiPhoto(e.target);photoObserver.unobserve(e.target)}})},{rootMargin:'500px'});
+function observeWikiPhotos(){document.querySelectorAll('img[data-wiki]').forEach(x=>photoObserver.observe(x))}
+const oldRenderModels=renderModels;
+renderModels=function(){oldRenderModels();setTimeout(observeWikiPhotos,20)};
+const oldBuildPopular=buildPopular;
+buildPopular=function(){oldBuildPopular();setTimeout(observeWikiPhotos,20)};
+const oldOpenDetails=openDetails;
+openDetails=function(company,i){oldOpenDetails(company,i);setTimeout(observeWikiPhotos,20)};
+buildCompanies();buildPopular();updateCompareBar();
+buildPopular();observeWikiPhotos();
 </script>
-
 </body>
 </html>
