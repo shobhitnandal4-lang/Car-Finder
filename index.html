@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CarFinder — Find. Compare. Drive.</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #0b0f14;
+      color: white;
+    }
+
+    header {
+      background: #111820;
+      border-bottom: 1px solid #26303a;
+      padding: 18px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo {
+      font-size: 25px;
+      font-weight: bold;
+    }
+
+    .logo span {
+      color: #3b9cff;
+    }
+
+    nav a {
+      color: #bbb;
+      text-decoration: none;
+      margin-left: 25px;
+      cursor: pointer;
+    }
+
+    nav a:hover {
+      color: white;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 75px 20px 55px;
+      background: radial-gradient(circle at top, #17304a, #0b0f14 60%);
+    }
+
+    .hero h1 {
+      font-size: 52px;
+      margin-bottom: 15px;
+    }
+
+    .hero h1 span {
+      color: #3b9cff;
+    }
+
+    .hero p {
+      color: #aab4bf;
+      font-size: 18px;
+      margin-bottom: 30px;
+    }
+
+    .search {
+      max-width: 650px;
+      margin: auto;
+      display: flex;
+      background: #151d26;
+      border: 1px solid #34404c;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .search input {
+      flex: 1;
+      padding: 17px;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: white;
+      font-size: 16px;
+    }
+
+    .search button {
+      padding: 0 25px;
+      border: none;
+      background: #3b9cff;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .filters {
+      max-width: 1200px;
+      margin: 35px auto 10px;
+      padding: 0 20px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    select {
+      background: #151d26;
+      color: white;
+      border: 1px solid #34404c;
+      padding: 12px 15px;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    .cars {
+      max-width: 1200px;
+      margin: 25px auto 70px;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 22px;
+    }
+
+    .card {
+      background: #151d26;
+      border: 1px solid #27333f;
+      border-radius: 15px;
+      overflow: hidden;
+      transition: 0.25s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: #3b9cff;
+    }
+
+    .car-image {
+      height: 180px;
+      background: linear-gradient(135deg, #202b36, #111820);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 70px;
+    }
+
+    .card-content {
+      padding: 18px;
+    }
+
+    .brand {
+      color: #3b9cff;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .card h2 {
+      margin: 5px 0 15px;
+    }
+
+    .specs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      color: #aeb8c2;
+      font-size: 14px;
+    }
+
+    .specs strong {
+      color: white;
+      display: block;
+      margin-top: 3px;
+    }
+
+    .price {
+      margin-top: 18px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .compare-btn {
+      width: 100%;
+      margin-top: 15px;
+      padding: 11px;
+      border: 1px solid #3b9cff;
+      border-radius: 8px;
+      background: transparent;
+      color: #3b9cff;
+      cursor: pointer;
+    }
+
+    .compare-btn:hover {
+      background: #3b9cff;
+      color: white;
+    }
+
+    .section-title {
+      max-width: 1200px;
+      margin: 45px auto 15px;
+      padding: 0 20px;
+      font-size: 28px;
+    }
+
+    footer {
+      border-top: 1px solid #26303a;
+      padding: 30px;
+      text-align: center;
+      color: #7f8993;
+    }
+
+    .empty {
+      text-align: center;
+      grid-column: 1 / -1;
+      padding: 50px;
+      color: #9aa4ae;
+    }
+
+    @media (max-width: 600px) {
+      .hero h1 {
+        font-size: 38px;
+      }
+
+      nav {
+        display: none;
+      }
+
+      .search button {
+        padding: 0 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">Car<span>Finder</span></div>
+
+  <nav>
+    <a onclick="scrollToCars()">Cars</a>
+    <a onclick="showAll()">Compare</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>Find Your <span>Perfect Car</span></h1>
+  <p>Search, explore and compare cars in one place.</p>
+
+  <div class="search">
+    <input
+      id="searchInput"
+      type="text"
+      placeholder="Search BMW, Mercedes, Porsche..."
+      oninput="filterCars()"
+    >
+    <button onclick="filterCars()">Search</button>
+  </div>
+</section>
+
+<h2 class="section-title">Explore Cars</h2>
+
+<div class="filters">
+  <select id="brandFilter" onchange="filterCars()">
+    <option value="all">All Brands</option>
+    <option value="BMW">BMW</option>
+    <option value="Mercedes">Mercedes</option>
+    <option value="Porsche">Porsche</option>
+    <option value="Audi">Audi</option>
+  </select>
+
+  <select id="sortFilter" onchange="filterCars()">
+    <option value="default">Sort By</option>
+    <option value="priceLow">Price: Low to High</option>
+    <option value="priceHigh">Price: High to Low</option>
+    <option value="speed">Top Speed</option>
+  </select>
+</div>
+
+<div class="cars" id="carContainer"></div>
+
+<footer>
+  © 2026 CarFinder — Find. Compare. Drive.
+</footer>
+
+<script>
+
+const cars = [
+  {
+    brand: "BMW",
+    name: "BMW M4 Competition",
+    price: 15500000,
+    speed: 290,
+    zero: 3.5,
+    mileage: "9.7 km/l",
+    engine: "3.0L Twin Turbo",
+    emoji: "🏎️"
+  },
+  {
+    brand: "Mercedes",
+    name: "Mercedes-AMG C63",
+    price: 13500000,
+    speed: 280,
+    zero: 3.4,
+    mileage: "8.5 km/l",
+    engine: "2.0L Turbo Hybrid",
+    emoji: "🚘"
+  },
+  {
+    brand: "Porsche",
+    name: "Porsche 911 Carrera",
+    price: 17500000,
+    speed: 293,
+    zero: 3.7,
+    mileage: "10.2 km/l",
+    engine: "3.0L Twin Turbo",
+    emoji: "🏁"
+  },
+  {
+    brand: "Audi",
+    name: "Audi RS5",
+    price: 11000000,
+    speed: 280,
+    zero: 3.9,
+    mileage: "9.4 km/l",
+    engine: "2.9L V6 Turbo",
+    emoji: "🚗"
+  },
+  {
+    brand: "BMW",
+    name: "BMW M5",
+    price: 19000000,
+    speed: 305,
+    zero: 3.5,
+    mileage: "7.8 km/l",
+    engine: "4.4L V8",
+    emoji: "🔥"
+  },
+  {
+    brand: "Mercedes",
+    name: "Mercedes-AMG GT",
+    price: 24500000,
+    speed: 315,
+    zero: 3.2,
+    mileage: "8.2 km/l",
+    engine: "4.0L V8",
+    emoji: "⚡"
+  }
+];
+
+function formatPrice(price) {
+  return "₹" + (price / 100000).toFixed(1) + " Lakh";
+}
+
+function displayCars(list) {
+
+  const container = document.getElementById("carContainer");
+
+  if (list.length === 0) {
+    container.innerHTML = '<div class="empty">No cars found.</div>';
+    return;
+  }
+
+  container.innerHTML = list.map((car, index) => `
+    <div class="card">
+
+      <div class="car-image">
+        ${car.emoji}
+      </div>
+
+      <div class="card-content">
+
+        <div class="brand">${car.brand}</div>
+
+        <h2>${car.name}</h2>
+
+        <div class="specs">
+
+          <div>
+            Top Speed
+            <strong>${car.speed} km/h</strong>
+          </div>
+
+          <div>
+            0–100 km/h
+            <strong>${car.zero} sec</strong>
+          </div>
+
+          <div>
+            Mileage
+            <strong>${car.mileage}</strong>
+          </div>
+
+          <div>
+            Engine
+            <strong>${car.engine}</strong>
+          </div>
+
+        </div>
+
+        <div class="price">${formatPrice(car.price)}</div>
+
+        <button class="compare-btn"
+          onclick="compareCar(${index})">
+          Compare
+        </button>
+
+      </div>
+    </div>
+  `).join("");
+}
+
+function filterCars() {
+
+  const search =
+    document.getElementById("searchInput").value.toLowerCase();
+
+  const brand =
+    document.getElementById("brandFilter").value;
+
+  const sort =
+    document.getElementById("sortFilter").value;
+
+  let result = cars.filter(car => {
+
+    const matchesSearch =
+      car.name.toLowerCase().includes(search) ||
+      car.brand.toLowerCase().includes(search);
+
+    const matchesBrand =
+      brand === "all" || car.brand === brand;
+
+    return matchesSearch && matchesBrand;
+  });
+
+  if (sort === "priceLow") {
+    result.sort((a,b) => a.price - b.price);
+  }
+
+  if (sort === "priceHigh") {
+    result.sort((a,b) => b.price - a.price);
+  }
+
+  if (sort === "speed") {
+    result.sort((a,b) => b.speed - a.speed);
+  }
+
+  displayCars(result);
+}
+
+function compareCar(index) {
+  const car = cars[index];
+
+  alert(
+    car.name +
+    "\n\nPrice: " + formatPrice(car.price) +
+    "\nTop Speed: " + car.speed + " km/h" +
+    "\n0-100: " + car.zero + " sec" +
+    "\nMileage: " + car.mileage
+  );
+}
+
+function scrollToCars() {
+  document.querySelector(".section-title")
+    .scrollIntoView({behavior: "smooth"});
+}
+
+function showAll() {
+  document.getElementById("searchInput").value = "";
+  document.getElementById("brandFilter").value = "all";
+  filterCars();
+  scrollToCars();
+}
+
+displayCars(cars);
+
+</script>
+
+</body>
+</html>
